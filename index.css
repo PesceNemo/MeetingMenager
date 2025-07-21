@@ -115,3 +115,73 @@ h5 {
 .modal-body {
     color: black !important;
 }
+
+.custom-input,
+.custom-textarea {
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+}
+
+.custom-input::placeholder,
+.custom-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.custom-input:focus,
+.custom-textarea:focus {
+    background-color: transparent;
+    color: white;
+    border-color: #66afe9;
+    box-shadow: 0 0 0 0.2rem rgba(102, 175, 233, 0.25);
+}
+
+/* Campo data con icona bianca */
+input[type="date"].custom-input {
+    color-scheme: dark; /* fa sì che il browser usi icone bianche nei temi scuri */
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+}
+
+/* Chrome/Safari: cambia il colore dell'icona del calendario */
+input[type="date"].custom-input::-webkit-calendar-picker-indicator {
+    color: white;    
+    cursor: pointer;
+}
+
+
+.btn-delete-task {
+    height: 38px; /* Altezza uguale all'input */
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #fff;
+    color: #fff;
+}
+
+.custom-input, .custom-textarea {
+    background-color: transparent;
+    color: white;
+    border: 1px solid #ccc;
+}
+
+.form-control::placeholder {
+    color: #ccc;
+}
+
+.btn-delete-task {
+    height: 38px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid white;
+    color: white;
+    background: transparent;
+}
+
+.btn-delete-task:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}

@@ -1,12 +1,21 @@
 <?php
 $id = $_GET['id'] ?? null;
 
-// Carica il file JSON che contiene le riunioni
+// Carica il file JSON che contiene le riunioni attive
 $meetingsJson = file_get_contents('meetings.json');
-$meetings = json_decode($meetingsJson, true);  // Decodifica JSON in un array associativo
+$meetings = json_decode($meetingsJson, true);
 
-// Recupera la riunione specificata dall'ID
+// Carica il file JSON che contiene le riunioni archiviate
+$archivedMeetingsJson = file_get_contents('archived_meetings.json');
+$archivedMeetings = json_decode($archivedMeetingsJson, true);
+
+// Prova a recuperare la riunione dall'elenco attivo
 $meeting = $meetings[$id] ?? null;
+
+// Se non la trovi negli attivi, prova negli archiviati
+if (!$meeting) {
+    $meeting = $archivedMeetings[$id] ?? null;
+}
 
 // Gestione della richiesta POST per aggiornare i task
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['task_index']) && isset($_POST['task_status'])) {
@@ -20,7 +29,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['task_index']) && isse
         $meeting['tasks'][$index] = str_replace("[Fatto] ", "", $meeting['tasks'][$index]);  // Rimuovi la dicitura "Fatto"
     }
 
-    // Aggiorna il file JSON
+    // Verifica se tutte le attività sono completate
+    $allTasksDone = true;
+    foreach ($meeting['tasks'] as $task) {
+        if (strpos($task, '[Fatto]') === false) {
+            $allTasksDone = false;
+            break;
+        }
+    }
+
+    // Se tutte le attività sono completate, archivia la riunione
+    if ($allTasksDone) {
+        // Aggiungi la riunione agli archiviati e rimuovila dagli attivi
+        $archivedMeetings[$id] = $meeting;
+        unset($meetings[$id]);
+
+        // Salva i dati aggiornati nei file JSON
+        file_put_contents('meetings.json', json_encode($meetings, JSON_PRETTY_PRINT));
+        file_put_contents('archived_meetings.json', json_encode($archivedMeetings, JSON_PRETTY_PRINT));
+
+        echo json_encode(['status' => 'archived']);
+        exit;
+    }
+
+    // Aggiorna il file JSON delle riunioni attive
     $meetings[$id] = $meeting;
     file_put_contents('meetings.json', json_encode($meetings, JSON_PRETTY_PRINT));
 
@@ -29,20 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['task_index']) && isse
     exit;
 }
 
-// Gestione della richiesta POST per eliminare la riunione
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_meeting']) && $_POST['delete_meeting'] == 'true') {
-    // Elimina la riunione
-    unset($meetings[$id]);
-
-    // Salva il file JSON aggiornato
-    file_put_contents('meetings.json', json_encode($meetings, JSON_PRETTY_PRINT));
-
-    // Risponde con successo
-    echo json_encode(['status' => 'deleted']);
-    exit;
-}
 ?>
-
 
 
 <!DOCTYPE html>

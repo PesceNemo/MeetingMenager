@@ -1,27 +1,29 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $date = $_POST['date'] ?? '';
-    $notes = $_POST['notes'] ?? '';
+    $date = trim($_POST['date'] ?? '');
+    $tasks = $_POST['tasks'] ?? [];
 
-    // Carica le riunioni esistenti
-    $meetings = json_decode(file_get_contents('meetings.json'), true);
+    // Filtra le attività vuote
+    $cleanedTasks = array_filter(array_map('trim', $tasks));
 
-    // Trova l'ID della nuova riunione (potresti utilizzare un ID automatico incrementale)
-    $newId = count($meetings) + 1;
+    $meetings = file_exists('meetings.json')
+        ? json_decode(file_get_contents('meetings.json'), true)
+        : [];
 
-    // Aggiungi la nuova riunione
+    $newId = (count($meetings) > 0) ? max(array_map('intval', array_keys($meetings))) + 1 : 1;
+
     $meetings[$newId] = [
         'date' => $date,
-        'tasks' => explode("\n", $notes) // Assumiamo che le note siano separate da linee nuove
+        'tasks' => $cleanedTasks
     ];
 
-    // Salva le modifiche nel file JSON
-    file_put_contents('meetings.json', json_encode($meetings, JSON_PRETTY_PRINT));
+    file_put_contents('meetings.json', json_encode($meetings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
     header("Location: index.php");
     exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="it">
@@ -32,13 +34,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.min.css" rel="stylesheet" />
-
     <link href="index.css" rel="stylesheet" />
-    <script src="meeting.js"></script>
 
+    <script>
+        let taskCount = 1;
+
+        function aggiungiCampoAttivita() {
+            const container = document.getElementById('tasks-container');
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'd-flex align-items-center mb-2';
+            wrapper.id = 'task-row-' + taskCount;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'tasks[]';
+            input.placeholder = 'Scrivi una attività';
+            input.className = 'form-control custom-input';
+            input.required = true;
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn btn-delete-task ms-2';
+            btn.innerHTML = '<i class="bi bi-trash"></i>';
+            btn.onclick = () => container.removeChild(wrapper);
+
+            wrapper.appendChild(input);
+            wrapper.appendChild(btn);
+            container.appendChild(wrapper);
+
+            taskCount++;
+        }
+
+        window.onload = () => {
+            // Aggiunge un campo attività di default alla prima apertura
+            aggiungiCampoAttivita();
+        };
+    </script>
 </head>
-<body class="meeting-body">
 
+<body class="meeting-body">
 <div class="container py-5">
     <h2 class="text-primary-blue mb-4"><strong>Nuova Riunione</strong></h2>
 
@@ -49,13 +84,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="mb-3">
-            <label for="notes" class="form-label text-white">Note</label>
-            <textarea name="notes" id="notes" class="form-control custom-textarea" rows="6" placeholder="Scrivi tutto quello che ti serve..." required></textarea>
-        </div>
-
-        <div class="mb-4 text-center">
-            <button type="button" class="btn btn-mic" aria-label="Microfono">
-                <i class="bi bi-mic-fill"></i>
+            <label class="form-label text-white">Attività</label>
+            <div id="tasks-container"></div>
+            <button type="button" class="btn btn-info mt-2" onclick="aggiungiCampoAttivita()">
+                <i class="bi bi-plus-circle"></i> Aggiungi attività
             </button>
         </div>
 

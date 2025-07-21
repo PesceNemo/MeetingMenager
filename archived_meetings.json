@@ -1,1 +1,26 @@
-[]
+{
+    "2": {
+        "date": "15 Marzo 2024",
+        "tasks": [
+            "[Fatto] Contattare fornitore Y.",
+            "[Fatto] Inviare report settimanale.",
+            "[Fatto] Verificare stato spedizione."
+        ]
+    },
+    "1": {
+        "date": "9 Febbraio 2024",
+        "tasks": [
+            "Preparare presentazione progetto X.",
+            "Inviare email al cliente.",
+            "[Fatto] Prenotare sala riunioni."
+        ]
+    },
+    "4": {
+        "date": "2025-07-21",
+        "tasks": [
+            "[Fatto] cose",
+            "[Fatto] cose",
+            "[Fatto] cose"
+        ]
+    }
+}

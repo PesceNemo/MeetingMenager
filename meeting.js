@@ -9,8 +9,39 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 taskText.style.textDecoration = 'none'; // Rimuovi il barrato
             }
+
+            // Verifica se tutte le attività sono fatte
+            const allTasksDone = [...taskCheckboxes].every(checkbox => checkbox.checked);
+
+            // Se tutte le attività sono fatte, archiviamo la riunione
+            if (allTasksDone) {
+                archivioRiunione();
+            }
         });
     });
+
+    // Funzione per archiviare la riunione
+    function archivioRiunione() {
+        const meetingId = document.getElementById('meeting-id').value; // ID della riunione (assicurati che sia disponibile nel DOM)
+
+        fetch('archive_meeting.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: meetingId })  // Passa l'ID della riunione da archiviare
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Puoi scegliere di aggiornare la UI o fare un redirect
+                window.location.href = 'archived_meetings.php'; // Redirige alle riunioni archiviate
+            } else {
+                console.error('Errore nell\'archiviazione della riunione:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Errore nella richiesta di archiviazione:', error);
+        });
+    }
 
     // Funzione per confermare l'eliminazione della riunione
     window.confermaEliminazione = function(id) {
@@ -49,4 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    
 });
