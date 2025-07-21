@@ -44,8 +44,10 @@ body {
     transition: transform 0.3s;
 }
 
+/* Rimuovere l'effetto hover che cambia la posizione o alza il blocco */
 .prodotto-card:hover {
-    transform: translateY(-5px);
+    transform: none; /* Elimina qualsiasi trasformazione */
+    box-shadow: none; /* Rimuovi l'ombra al passaggio del mouse */
 }
 
 /* === BUTTONS === */
@@ -81,7 +83,7 @@ body {
 /* === FORM ELEMENTS === */
 .custom-textarea,
 .custom-input {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255, 255, 255);
     border: 2px solid #1B6CA8;
     color: white;
     padding: 12px;
@@ -106,4 +108,10 @@ h2,
 h4,
 h5 {
     color: white !important;
+}
+.modal-title {
+    color: black !important; /* Colore rosso personalizzato */
+}
+.modal-body {
+    color: black !important;
 }

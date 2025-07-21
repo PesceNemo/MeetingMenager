@@ -3,11 +3,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $date = $_POST['date'] ?? '';
     $notes = $_POST['notes'] ?? '';
 
+    // Carica le riunioni esistenti
+    $meetings = json_decode(file_get_contents('meetings.json'), true);
+
+    // Trova l'ID della nuova riunione (potresti utilizzare un ID automatico incrementale)
+    $newId = count($meetings) + 1;
+
+    // Aggiungi la nuova riunione
+    $meetings[$newId] = [
+        'date' => $date,
+        'tasks' => explode("\n", $notes) // Assumiamo che le note siano separate da linee nuove
+    ];
+
+    // Salva le modifiche nel file JSON
+    file_put_contents('meetings.json', json_encode($meetings, JSON_PRETTY_PRINT));
 
     header("Location: index.php");
     exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -19,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.min.css" rel="stylesheet" />
 
     <link href="index.css" rel="stylesheet" />
+    <script src="meeting.js"></script>
+
 </head>
 <body class="meeting-body">
 
