@@ -1,0 +1,109 @@
+/* === BASE STYLES === */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(120deg, #000000 40%, #1B6CA8 100%);
+    color: white;
+    min-height: 100vh;
+}
+
+/* === TYPOGRAPHY === */
+.text-primary-blue {
+    color: #4FC3F7 !important;
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, #4FC3F7, #1B6CA8, #0D1B2A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* === SECTION TITLE BAR === */
+.section-title-line .title {
+    width: 5px;
+    height: 40px;
+    background: linear-gradient(#4FC3F7, #1B6CA8);
+    border-radius: 3px;
+}
+
+.section-title-line {
+    width: 5px;
+    height: 40px;
+    background: linear-gradient(#4FC3F7, #1B6CA8);
+    border-radius: 3px; 
+}
+
+/* === CARDS === */
+.prodotto-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+    transition: transform 0.3s;
+}
+
+.prodotto-card:hover {
+    transform: translateY(-5px);
+}
+
+/* === BUTTONS === */
+.btn-primary-blue {
+    background-color: #1B6CA8;
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-primary-blue:hover {
+    background-color: #155a8a;
+}
+
+.btn-mic {
+    background-color: #4FC3F7;
+    color: #0D1B2A;
+    border: none;
+    font-weight: bold;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(79, 195, 247, 0.3);
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-mic:hover {
+    background-color: #1B6CA8;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* === FORM ELEMENTS === */
+.custom-textarea,
+.custom-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #1B6CA8;
+    color: white;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+
+.custom-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.custom-input {
+    padding: 10px;
+}
+
+/* === OVERRIDES === */
+.card-title,
+.lead,
+p,
+label,
+h2,
+h4,
+h5 {
+    color: white !important;
+}
