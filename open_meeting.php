@@ -1,5 +1,6 @@
 <?php
 $id = $_GET['id'] ?? null;
+$returnUrl = $_GET['return_url'] ?? 'index.php';
 
 // Carica il file JSON che contiene le riunioni attive
 $meetingsJson = file_get_contents('meetings.json');
@@ -167,11 +168,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['task_index']) && isse
                 </ul>
             </div>
 
-            <a href="index.php" class="btn btn-secondary mt-4">← Torna alla lista</a>
         <?php else: ?>
             <div class="alert alert-danger">Riunione non trovata.</div>
-            <a href="index.php" class="btn btn-secondary">← Torna alla lista</a>
         <?php endif; ?>
+        <a href="<?= htmlspecialchars($returnUrl) ?>" class="btn btn-secondary mt-4">← Torna alla lista</a>
+
     </div>
 
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
@@ -191,6 +192,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['task_index']) && isse
             </div>
         </div>
     </div>
+
+
+    <script>
+    function confermaEliminazione(id) {
+        const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+        modal.show();
+
+        document.getElementById('confirmDeleteButton').onclick = function() {
+            fetch('open_meeting.php?id=' + id, {
+                method: 'POST',
+                body: new URLSearchParams({
+                    delete_meeting: 'true'
+                }),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'deleted') {
+                    window.location.href = '<?= $returnUrl ?>';  // ritorna alla pagina di provenienza
+                } else {
+                    alert('Errore nella richiesta di eliminazione.');
+                }
+            })
+            .catch(error => {
+                alert('Errore nella richiesta di eliminazione.');
+                console.error('Errore nell\'eliminazione della riunione:', error);
+            });
+        };
+    }
+    </script>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

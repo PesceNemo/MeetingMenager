@@ -1,6 +1,23 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $date = trim($_POST['date'] ?? '');
+    $dateInput = trim($_POST['date'] ?? '');
+    $dateObject = DateTime::createFromFormat('Y-m-d', $dateInput);
+
+    $mesi = [
+        '01' => 'Gennaio', '02' => 'Febbraio', '03' => 'Marzo',
+        '04' => 'Aprile', '05' => 'Maggio', '06' => 'Giugno',
+        '07' => 'Luglio', '08' => 'Agosto', '09' => 'Settembre',
+        '10' => 'Ottobre', '11' => 'Novembre', '12' => 'Dicembre'
+    ];
+
+    if ($dateObject) {
+        $giorno = $dateObject->format('d');
+        $mese = $dateObject->format('m');
+        $anno = $dateObject->format('Y');
+        $meseItaliano = $mesi[$mese];
+        $date = "$giorno $meseItaliano $anno";
+    }
+
     $tasks = $_POST['tasks'] ?? [];
 
     // Filtra le attività vuote
@@ -70,6 +87,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Aggiunge un campo attività di default alla prima apertura
             aggiungiCampoAttivita();
         };
+
+        window.onload = () => {
+    // Aggiunge un campo attività di default alla prima apertura
+    aggiungiCampoAttivita();
+
+    const voiceBtn = document.getElementById('voice-record-btn');
+    if (!voiceBtn) return;
+
+    // Controlla supporto API
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        voiceBtn.disabled = true;
+        voiceBtn.textContent = 'Registrazione non supportata';
+        return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'it-IT'; // italiano
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    voiceBtn.onclick = () => {
+        recognition.start();
+        voiceBtn.textContent = 'Ascolto... clicca per fermare';
+        voiceBtn.disabled = true;
+    };
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.trim();
+            if (transcript) {
+                // Crea nuovo campo attività con trascrizione
+                const container = document.getElementById('tasks-container');
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'd-flex align-items-center mb-2';
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'tasks[]';
+                input.placeholder = 'Scrivi una attività';
+                input.className = 'form-control custom-input';
+                input.required = true;
+                input.value = transcript;
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn btn-delete-task ms-2';
+                btn.innerHTML = '<i class="bi bi-trash"></i>';
+                btn.onclick = () => container.removeChild(wrapper);
+
+                wrapper.appendChild(input);
+                wrapper.appendChild(btn);
+                container.appendChild(wrapper);
+            }
+            voiceBtn.textContent = 'Registra attività';
+            voiceBtn.disabled = false;
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Errore riconoscimento vocale:', event.error);
+            voiceBtn.textContent = 'Registra attività';
+            voiceBtn.disabled = false;
+        };
+
+        recognition.onend = () => {
+            voiceBtn.textContent = 'Registra attività';
+            voiceBtn.disabled = false;
+        };
+    };
+
     </script>
 </head>
 
@@ -89,6 +176,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="button" class="btn btn-info mt-2" onclick="aggiungiCampoAttivita()">
                 <i class="bi bi-plus-circle"></i> Aggiungi attività
             </button>
+            <button type="button" class="btn btn-success mt-2 ms-2" id="voice-record-btn">
+                <i class="bi bi-mic-fill"></i> Registra attività
+            </button>
+
         </div>
 
         <button type="submit" class="btn btn-primary-blue">

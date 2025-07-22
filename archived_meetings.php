@@ -29,7 +29,7 @@ $archivedMeetings = json_decode($archivedMeetingsJson, true);
                             <h4 class="card-title gradient-text">Riunione</h4>
                             <p class="lead text-white"><?= htmlspecialchars($meeting['date']) ?></p>
                         </div>
-                        <a href="open_meeting.php?id=<?= $id ?>" class="btn btn-info text-white fw-bold mt-3 shadow">
+                        <a href="open_meeting.php?id=<?= $id ?>&return_url=archived_meetings.php" class="btn btn-info text-white fw-bold mt-3 shadow">
                             <i class="bi bi-folder2-open"></i> Apri
                         </a>
                     </div>

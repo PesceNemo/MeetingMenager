@@ -1,4 +1,12 @@
 {
+    "1": {
+        "date": "9 Febbraio 2024",
+        "tasks": [
+            "Preparare presentazione progetto X.",
+            "Inviare email al cliente.",
+            "Prenotare sala riunioni."
+        ]
+    },
     "3": {
         "date": "7 Giugno 2024",
         "tasks": [
