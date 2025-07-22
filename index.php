@@ -41,9 +41,15 @@ if ($meetings === null) {
             <a href="new_meeting.php" class="btn btn-info btn-lg shadow text-white mt-2 mt-md-0 me-3">
                 <i class="bi bi-plus-circle"></i> Nuova Riunione
             </a>
+
             <!-- Bottone Archivio -->
-            <a href="archived_meetings.php" class="btn btn-secondary btn-lg shadow text-white mt-2 mt-md-0">
+            <a href="archived_meetings.php" class="btn btn-secondary btn-lg shadow text-white mt-2 mt-md-0 me-3">
                 <i class="bi bi-archive"></i> Archivio
+            </a>
+
+            <!-- Bottone Cestino -->
+            <a href="trash.php" class="btn btn-danger btn-lg shadow text-white mt-2 mt-md-0">
+                <i class="bi bi-trash3"></i> Cestino
             </a>
         </div>
 

@@ -29,9 +29,17 @@ $archivedMeetings = json_decode($archivedMeetingsJson, true);
                             <h4 class="card-title gradient-text">Riunione</h4>
                             <p class="lead text-white"><?= htmlspecialchars($meeting['date']) ?></p>
                         </div>
+                        
                         <a href="open_meeting.php?id=<?= $id ?>&return_url=archived_meetings.php" class="btn btn-info text-white fw-bold mt-3 shadow">
                             <i class="bi bi-folder2-open"></i> Apri
                         </a>
+
+                        <form method="POST" action="delete_meeting.php" onsubmit="return confirm('Sei sicuro di voler eliminare questa riunione?');">
+                            <input type="hidden" name="id" value="<?= $id ?>">
+                            <button type="submit" class="btn btn-delete-task mt-2 w-100">
+                                <i class="bi bi-trash-fill"></i> Elimina
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
