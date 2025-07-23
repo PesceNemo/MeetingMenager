@@ -1,0 +1,78 @@
+﻿<Window x:Class="GestioneAgenti.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Gestione Agenti"
+        Height="500"
+        Width="800"
+        Background="{StaticResource BackgroundBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Titolo centrato con icona -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20" VerticalAlignment="Center">
+            <Image Source="Images/agent_icon.png" Width="32" Height="32" Margin="0,0,10,0"/>
+            <TextBlock Text="Gestione Agenti"
+                       Foreground="White"
+                       FontSize="28"
+                       FontWeight="SemiBold"
+                       FontFamily="Georgia" />
+        </StackPanel>
+
+        <!-- Border esterno con bordi curvi e ombra -->
+        <Border Grid.Row="1"
+                Margin="10"
+                Background="Transparent"
+                CornerRadius="12"
+                BorderThickness="2"
+                BorderBrush="{StaticResource DataGridBorderBrush}"
+                SnapsToDevicePixels="True">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" Direction="270" ShadowDepth="2" Opacity="0.5" BlurRadius="5"/>
+            </Border.Effect>
+
+            <DataGrid x:Name="dataGrid"
+                      AutoGenerateColumns="False"
+                      Background="Transparent"
+                      Foreground="White"
+                      CanUserAddRows="False"
+                      IsReadOnly="True"
+                      BorderThickness="0"
+                      GridLinesVisibility="None"
+                      RowBackground="Transparent"
+                      AlternatingRowBackground="Transparent"
+                      HeadersVisibility="Column"
+                      ItemsSource="{Binding dati}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Agente" Binding="{Binding Agente}" />
+                    <DataGridTextColumn Header="Cash" Binding="{Binding Cash}" />
+                    <DataGridTextColumn Header="Ordine Origine" Binding="{Binding OrdineOrigine}" />
+                    <DataGridCheckBoxColumn Header="Pagato" Binding="{Binding Pagato}" />
+                    <DataGridTextColumn Header="Data Fattura Saldata" Binding="{Binding DataFatturaSaldata, StringFormat=d}" />
+                    <DataGridTemplateColumn Header="Stato Manuale" Width="180">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding DataContext.StatiManualiDisponibili, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          SelectedItem="{Binding StatoManuale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectionChanged="ComboBox_SelectionChanged"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Bottone Esporta centrato sotto la tabella -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Button Content="Esporta in Excel"
+                    Click="BtnEsportaExcel_Click"
+                    Width="160"
+                    Height="36"
+                    Style="{StaticResource ExportButtonStyle}"/>
+        </StackPanel>
+    </Grid>
+</Window>  
