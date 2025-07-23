@@ -4,35 +4,25 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
-        <!-- 🎨 COLORI BASE -->
+        <!-- 🎨 Colori principali -->
         <Color x:Key="BackgroundColor">#2B2B2B</Color>
-        <Color x:Key="ExportButtonColor">#F2E9DC</Color>
+        <Color x:Key="TableBorderColor">#96B6C5</Color>
+        <Color x:Key="HeaderBackgroundColor">#ADC4CE</Color>
+        <Color x:Key="RowBackgroundColor">#EEE0C9</Color>
+        <Color x:Key="DetailTextColor">#F1F0E8</Color>
+        <Color x:Key="ExportButtonColor">#F1F0E8</Color>
         <Color x:Key="DarkTextColor">#111111</Color>
-        <Color x:Key="GridLineColor">#F2E9DC</Color>
-        <Color x:Key="HeaderBackgroundColor">#3A3A3A</Color>
-        <Color x:Key="DataGridBorderColor">#F2E9DC</Color>
-        <Color x:Key="DataGridBackgroundOverlayColor">#332B2B2B</Color>
 
-        <!-- 🎨 BRUSHES -->
+        <!-- Brushes -->
         <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}"/>
+        <SolidColorBrush x:Key="TableBorderBrush" Color="{StaticResource TableBorderColor}"/>
+        <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="{StaticResource HeaderBackgroundColor}"/>
+        <SolidColorBrush x:Key="RowBackgroundBrush" Color="{StaticResource RowBackgroundColor}"/>
+        <SolidColorBrush x:Key="DetailTextBrush" Color="{StaticResource DetailTextColor}"/>
         <SolidColorBrush x:Key="ExportButtonBrush" Color="{StaticResource ExportButtonColor}"/>
         <SolidColorBrush x:Key="DarkTextBrush" Color="{StaticResource DarkTextColor}"/>
-        <SolidColorBrush x:Key="GridLineBrush" Color="{StaticResource GridLineColor}"/>
-        <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="{StaticResource HeaderBackgroundColor}"/>
-        <SolidColorBrush x:Key="HeaderTextBrush" Color="White"/>
-        <SolidColorBrush x:Key="DataGridBorderBrush" Color="{StaticResource DataGridBorderColor}"/>
-        <SolidColorBrush x:Key="DataGridBackgroundOverlayBrush" Color="{StaticResource DataGridBackgroundOverlayColor}"/>
 
-        <!-- 🪄 STILE TITOLO PRINCIPALE -->
-        <Style x:Key="TitleTextStyle" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
-            <Setter Property="FontSize" Value="26"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="TextAlignment" Value="Center"/>
-        </Style>
-
-        <!-- 🧷 STILE PULSANTE -->
+        <!-- Bottone esporta -->
         <Style x:Key="ExportButtonStyle" TargetType="Button">
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="14"/>
@@ -42,12 +32,12 @@
             <Setter Property="Margin" Value="4"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#D0C9C0"/>
+            <Setter Property="BorderBrush" Value="#CCC"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
+                        <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="4">
@@ -58,25 +48,27 @@
             </Setter>
         </Style>
 
-        <!-- 📊 STILE GLOBALE DATAGRID -->
+        <!-- Stile globale per DataGrid -->
         <Style TargetType="DataGrid">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
             <Setter Property="GridLinesVisibility" Value="None"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="RowBackground" Value="{StaticResource RowBackgroundBrush}"/>
+            <Setter Property="AlternatingRowBackground" Value="#FFF7F2"/>
             <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
 
-        <!-- 📋 STILE INTESTAZIONE COLONNE DATAGRID -->
+        <!-- Header delle colonne -->
         <Style TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="{StaticResource HeaderBackgroundBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource HeaderTextBrush}"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="BorderBrush" Value="{StaticResource GridLineBrush}"/>
+            <Setter Property="BorderBrush" Value="#DDD"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="Padding" Value="6,4"/>
         </Style>

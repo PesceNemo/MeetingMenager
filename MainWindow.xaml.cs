@@ -6,6 +6,9 @@ using System.Windows;
 using System.Windows.Controls;
 using ClosedXML.Excel;
 using Microsoft.Win32;
+using System.ComponentModel;
+using System.Windows.Data;
+
 
 namespace GestioneAgenti
 {
@@ -13,6 +16,8 @@ namespace GestioneAgenti
     {
         public ObservableCollection<Clienti> dati { get; set; }
         public List<StatoManualeEnum> StatiManualiDisponibili { get; set; }
+
+        private ICollectionView datiView;
 
         public MainWindow()
         {
@@ -29,54 +34,11 @@ namespace GestioneAgenti
                 StatoManualeEnum.DaGestire
             };
 
-            // Dati di esempio 
-            dati = new ObservableCollection<Clienti>()
-            {
-                //new Clienti
-                //{
-                //    Agente = "Mario Rossi",
-                //    Cash = 1200.50,
-                //    OrdineOrigine = "ORD001",
-                //    Pagato = false,
-                //    DataFatturaSaldata = new DateTime(2025, 7, 22), 
-                //    StatoManuale = null
-                //},
-                //new Clienti
-                //{
-                //    Agente = "Luca Bianchi",
-                //    Cash = 850.00,
-                //    OrdineOrigine = "ORD002",
-                //    Pagato = false,
-                //    DataFatturaSaldata = new DateTime(2025, 4, 30), 
-                //    StatoManuale = null
-                //},
-                //new Clienti
-                //{
-                //    Agente = "Luca Bianchi",
-                //    Cash = 850.00,
-                //    OrdineOrigine = "ORD002",
-                //    Pagato = false,
-                //    DataFatturaSaldata = new DateTime(2025, 4, 30),
-                //    StatoManuale = null
-                //},
-                //new Clienti
-                //{
-                //    Agente = "Luca Bianchi",
-                //    Cash = 850.00,
-                //    OrdineOrigine = "ORD002",
-                //    Pagato = false,
-                //    DataFatturaSaldata = new DateTime(2025, 4, 30),
-                //    StatoManuale = null
-                //}
-            };
-
+            dati = new ObservableCollection<Clienti>(){};
 
             dati = RecuperoDatiDB();
-
-
-
-
-
+            datiView = CollectionViewSource.GetDefaultView(dati);
+            dataGrid.ItemsSource = datiView;
         }
 
         private ObservableCollection<Clienti> RecuperoDatiDB()
@@ -94,82 +56,82 @@ namespace GestioneAgenti
 
                 var query = $@"
                
-WITH scadenze
-AS (
-    SELECT DISTINCT DSPAG AS PAGATO
-        , DSKEY
-    FROM Concept.dbo.A01_SCA_MOV
-    )
-    , documenti
-AS (
-    SELECT (
-            SELECT TOP 1 IDTES
-            FROM Concept.dbo.A01_DOC_VER
-            WHERE DRORI IN (
-                    SELECT RECORD_ID
-                    FROM Concept.dbo.A01_doc_ver
-                    WHERE IDTES = ven.RECORD_ID
-                    )
-            ) IDFAT
-        , ven.RECORD_ID
-        , CONCAT (
-            DTCAU
-            , ' '
-            , DTANN
-            , '/'
-            , DTNUM
-            , ' '
-            , DTSER, ' ',
-            DTRAS
-            ) ORIGINE
-        , CONCAT (
-            AGNOM
-            , ' '
-            , AGCOG
-            , ' - '
-            , CDAGE
-            ) AS AGENTE
-        , FLVAL CASH
-        , DTCAU CAUSALE
-        , DTTOT TOTALE_DOCUMENTO
-        , DTIMP IMPONIBILE
-        , DTUSA RIFERIMENTO_INTERNO
-    FROM Concept.dbo.A01_DOC_VEN ven
-    LEFT JOIN Concept.dbo.A01_FLD_VAL
-        ON FLTAB = 'DOC_VEN'
-            AND FLKEY = ven.RECORD_ID
-            AND flFLD = 'GV_PRXE'
-    INNER JOIN Concept.dbo.A01_AGE_NTI
-        ON DTAGE = CDAGE
-    WHERE DTAGE <> ''
-        AND DTTPD = 'ORD'
-        AND (
-            SELECT TOP 1 vv.DTTPD
-            FROM Concept.dbo.A01_DOC_VER rr
-            INNER JOIN Concept.dbo.A01_DOC_VEN vv
-                ON vv.RECORD_ID = rr.IDTES
-            WHERE DRORI IN (
-                    SELECT RECORD_ID
-                    FROM Concept.dbo.A01_doc_ver
-                    WHERE IDTES = ven.RECORD_ID
-                    )
-            ) = 'FAT'
-    )
-SELECT AGENTE,CASH,ORIGINE, (
-        SELECT CASE
-                WHEN EXISTS(
-                        SELECT 1
-                        FROM scadenze
-                        WHERE PAGATO = 0
-                            AND DSKEY = documenti.IDFAT
+                    WITH scadenze
+                    AS (
+                        SELECT DISTINCT DSPAG AS PAGATO
+                            , DSKEY
+                        FROM Concept.dbo.A01_SCA_MOV
                         )
-                    THEN 0
-                ELSE 1
-                END AS RESULT
-        ) PAGATO, GETDATE(), IDFAT, (SELECT FLVAL FROM A01_FLD_VAL WHERE FLFLD = 'GV_STAT' AND FLKEY = IDFAT)
-FROM documenti
-WHERE idfat IS NOT NULL
-";
+                        , documenti
+                    AS (
+                        SELECT (
+                                SELECT TOP 1 IDTES
+                                FROM Concept.dbo.A01_DOC_VER
+                                WHERE DRORI IN (
+                                        SELECT RECORD_ID
+                                        FROM Concept.dbo.A01_doc_ver
+                                        WHERE IDTES = ven.RECORD_ID
+                                        )
+                                ) IDFAT
+                            , ven.RECORD_ID
+                            , CONCAT (
+                                DTCAU
+                                , ' '
+                                , DTANN
+                                , '/'
+                                , DTNUM
+                                , ' '
+                                , DTSER, ' ',
+                                DTRAS
+                                ) ORIGINE
+                            , CONCAT (
+                                AGNOM
+                                , ' '
+                                , AGCOG
+                                , ' - '
+                                , CDAGE
+                                ) AS AGENTE
+                            , FLVAL CASH
+                            , DTCAU CAUSALE
+                            , DTTOT TOTALE_DOCUMENTO
+                            , DTIMP IMPONIBILE
+                            , DTUSA RIFERIMENTO_INTERNO
+                        FROM Concept.dbo.A01_DOC_VEN ven
+                        LEFT JOIN Concept.dbo.A01_FLD_VAL
+                            ON FLTAB = 'DOC_VEN'
+                                AND FLKEY = ven.RECORD_ID
+                                AND flFLD = 'GV_PRXE'
+                        INNER JOIN Concept.dbo.A01_AGE_NTI
+                            ON DTAGE = CDAGE
+                        WHERE DTAGE <> ''
+                            AND DTTPD = 'ORD'
+                            AND (
+                                SELECT TOP 1 vv.DTTPD
+                                FROM Concept.dbo.A01_DOC_VER rr
+                                INNER JOIN Concept.dbo.A01_DOC_VEN vv
+                                    ON vv.RECORD_ID = rr.IDTES
+                                WHERE DRORI IN (
+                                        SELECT RECORD_ID
+                                        FROM Concept.dbo.A01_doc_ver
+                                        WHERE IDTES = ven.RECORD_ID
+                                        )
+                                ) = 'FAT'
+                        )
+                    SELECT AGENTE,CASH,ORIGINE, (
+                            SELECT CASE
+                                    WHEN EXISTS(
+                                            SELECT 1
+                                            FROM scadenze
+                                            WHERE PAGATO = 0
+                                                AND DSKEY = documenti.IDFAT
+                                            )
+                                        THEN 0
+                                    ELSE 1
+                                    END AS RESULT
+                            ) PAGATO, GETDATE(), IDFAT, (SELECT FLVAL FROM A01_FLD_VAL WHERE FLFLD = 'GV_STAT' AND FLKEY = IDFAT)
+                    FROM documenti
+                    WHERE idfat IS NOT NULL
+                    ";
 
                 using (SqlDataReader reader = new SqlCommand(query, sql).ExecuteReader())
                 {
@@ -237,7 +199,6 @@ WHERE idfat IS NOT NULL
                 }
             }
         }
-
         private void BtnEsportaExcel_Click(object sender, RoutedEventArgs e)
         {
             EsportaInExcel();
@@ -284,7 +245,20 @@ WHERE idfat IS NOT NULL
                 }
             }
         }
+        private void FiltroTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string filtro = FiltroTextBox.Text?.ToLower() ?? string.Empty;
 
+            datiView.Filter = obj =>
+            {
+                if (obj is Clienti cliente)
+                {
+                    return (cliente.Agente?.ToLower().Contains(filtro) ?? false) ||
+                           (cliente.OrdineOrigine?.ToLower().Contains(filtro) ?? false);
+                }
+                return false;
+            };
+        }
 
     }
 }
